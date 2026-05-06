@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Admin {
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+}
+
+model Trip {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String
+  mapImage    String?  // The "Treasure Map" graphic
+  price       Float
+  duration    String
+  date        String
+  type        String   @default("organized") // organized, bus
+  rating      Float    @default(4.9)
+  reviewCount Int      @default(124)
+  showGuide   Boolean  @default(true)
+  guideName   String?
+  guideImage  String?
+  guideExp    String?
+  features    String   // Stored as JSON string
+  itinerary   String?  // Stored as JSON string
+  hotspots    String?  // Stored as JSON string
+  gallery     String?  // Stored as JSON string
+  youtubeUrl  String?
+  includes    String?  // Stored as JSON string
+  excludes    String?  // Stored as JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Hotel {
+  id              String   @id @default(cuid())
+  name            String
+  stars           Int      @default(5)
+  region          String   // Aqaba, Eilat, Jericho, Sinai
+  image           String
+  mealPlans       String   // Stored as JSON string (BB, HP, Soft All, Hard All)
+  roomTypes       String   // Stored as JSON string (SGL, DBL, TPL)
+  pricingMatrix   String   // Stored as JSON string (Complex Seasonal Pricing)
+  mealSupplements String   // Stored as JSON string
+  options         String   // Stored as JSON string (Supplements like Sea View)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Flight {
+  id                  String   @id @default(cuid())
+  from                String
+  to                  String
+  departureTime       String
+  arrivalTime         String
+  duration            String
+  returnDepartureTime String?
+  returnArrivalTime   String?
+  returnDuration      String?
+  airline             String
+  cabin               String   @default("ECONOMY")
+  price               Float
+  isLastMinute        Boolean  @default(false)
+  lastMinutePrice     Float?
+  availableDays       String   // Stored as JSON string (SUN, TUE, THU)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model BusTrip {
+  id        String   @id @default(cuid())
+  from      String
+  to        String
+  days      String   // JSON string of days (e.g., ["الأحد", "الثلاثاء"])
+  time      String
+  price     Float
+  image     String?
+  createdAt DateTime @default(now())
+}
+
+model FAQ {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id            String @id @default("global")
+  siteName      String @default("Yareen Tours")
+  phone         String @default("+972 000-000-000")
+  email         String @default("info@yarentours.com")
+  address       String @default("كفركنا، المركز الرئيسي")
+  whatsapp      String @default("https://wa.me/...")
+  facebook      String @default("#")
+  instagram     String @default("#")
+  heroVideo     String @default("...")
+  heroTitle     String @default("نرسم لكم خارطة العالم، ومعنا تكون كل رحلة حكاية نجاح.")
+  heroSubtitle  String @default("استكشف أفضل الوجهات السياحية بإرشاد عربي كامل وأعلى معايير الراحة.")
+  aboutTitle    String @default("يارين تورز.. نرسم لكم خارطة العالم")
+  aboutText     String @default("بوابتكم الدائمة لاكتشاف العالم بأعلى معايير الراحة والتنظيم.")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  type      String   @default("info") // info, success, warning, error
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  action    String
+  details   String?
+  adminName String?
+  createdAt DateTime @default(now())
+}
