@@ -14,7 +14,10 @@ const prismaClientSingleton = () => {
     return new PrismaClient();
   }
 
-  const pool = new Pool({ connectionString });
+  const pool = new Pool({ 
+    connectionString,
+    ssl: true
+  });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };
