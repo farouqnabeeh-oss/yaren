@@ -5,8 +5,7 @@ import { Pool } from "pg";
 const prismaClientSingleton = () => {
   const connectionString = process.env.DATABASE_URL;
 
-  if (!connectionString) {
-    console.warn("⚠️ DATABASE_URL is not defined. Prisma is running in fallback mode.");
+  if (process.env.NODE_ENV === "production" || !connectionString) {
     return new PrismaClient();
   }
 
@@ -15,7 +14,6 @@ const prismaClientSingleton = () => {
     const adapter = new PrismaPg(pool);
     return new PrismaClient({ adapter });
   } catch (error) {
-    console.warn("⚠️ Failed to initialize PrismaPg adapter. Falling back to default PrismaClient.", error);
     return new PrismaClient();
   }
 };
