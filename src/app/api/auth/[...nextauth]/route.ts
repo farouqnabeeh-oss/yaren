@@ -16,19 +16,27 @@ const handler = NextAuth({
           throw new Error("يرجى إدخال كافة البيانات");
         }
 
+        console.log("🔐 Login attempt for:", credentials.username);
+        
         const admin = await prisma.admin.findUnique({
           where: { username: credentials.username },
         });
 
         if (!admin) {
+          console.log("❌ Admin user not found in database:", credentials.username);
           throw new Error("بيانات الدخول غير صحيحة");
         }
 
+        console.log("👤 User found, comparing passwords...");
         const isValid = await bcrypt.compare(credentials.password, admin.password);
 
         if (!isValid) {
+          console.log("❌ Password mismatch for user:", credentials.username);
           throw new Error("بيانات الدخول غير صحيحة");
         }
+
+        console.log("✅ Login successful for:", credentials.username);
+
 
         return {
           id: admin.id,
