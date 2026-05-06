@@ -30,5 +30,14 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "prisma/seed.ts",
+    "prisma/update_contacts.js",
+    "check_trips.ts",
+    "src/app/admin/login/create-admin.js",
+    "src/app/admin/setup-admin.ts",
+    "src/app/admin/setup-db-direct.js",
+    "src/app/admin/setup-logs.js"
+  ]
 }
