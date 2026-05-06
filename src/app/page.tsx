@@ -11,6 +11,8 @@ import { ESimoSection, BorderCrossings } from "@/components/home/ExtraServices";
 import prisma from "@/lib/prisma";
 import { getSettings } from "@/lib/actions/settings";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   // Fetch all dynamic data from database with error handling
   let hotels: any[] = [];
