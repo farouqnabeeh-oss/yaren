@@ -5,7 +5,17 @@ import { Pool } from "pg";
 const prismaClientSingleton = () => {
   const connectionString = process.env.DATABASE_URL;
 
-  if (process.env.NODE_ENV === "production" || !connectionString) {
+  if (process.env.NODE_ENV === "production") {
+    return new PrismaClient({
+      datasources: {
+        db: {
+          url: connectionString,
+        },
+      },
+    });
+  }
+
+  if (!connectionString) {
     return new PrismaClient();
   }
 
@@ -14,7 +24,13 @@ const prismaClientSingleton = () => {
     const adapter = new PrismaPg(pool);
     return new PrismaClient({ adapter });
   } catch (error) {
-    return new PrismaClient();
+    return new PrismaClient({
+      datasources: {
+        db: {
+          url: connectionString,
+        },
+      },
+    });
   }
 };
 
