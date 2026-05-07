@@ -22,6 +22,6 @@ export async function GET() {
       success: false,
       error: error.message,
       stack: error.stack
-    }, { status: 500 });
+    }, { status: 200 });
   }
 }
