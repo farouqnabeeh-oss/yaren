@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
@@ -12,7 +13,9 @@ const prismaClientSingleton = () => {
   // Optimized for high-latency connections (Japan to US)
   const pool = new Pool({ 
     connectionString,
-    ssl: true,
+    ssl: {
+      rejectUnauthorized: false
+    },
     connectionTimeoutMillis: 15000, // Wait 15s for connection
     idleTimeoutMillis: 30000,
     max: 10 // Limit pool size for serverless
