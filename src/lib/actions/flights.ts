@@ -19,18 +19,21 @@ export async function createFlight(formData: FormData) {
   try {
     const from = formData.get("from") as string;
     const to = formData.get("to") as string;
-    const departureTime = formData.get("departureTime") as string;
-    const arrivalTime = formData.get("arrivalTime") as string;
+    const departureTime = (formData.get("departureTime") as string) || "غير محدد";
+    const arrivalTime = (formData.get("arrivalTime") as string) || "غير محدد";
     const airline = formData.get("airline") as string;
     const price = parseFloat(formData.get("price") as string);
-    const isLastMinute = formData.get("isLastMinute") === "on"; // Checkbox value is "on" or null
+    const isLastMinute = formData.get("isLastMinute") === "on";
     const lastMinutePrice = formData.get("lastMinutePrice") ? parseFloat(formData.get("lastMinutePrice") as string) : null;
-    const availableDays = JSON.stringify(formData.getAll("availableDays"));
+    
+    const daysFromForm = formData.get("days") as string;
+    const availableDays = daysFromForm ? daysFromForm : (availableDaysFromList => availableDaysFromList.length > 2 ? availableDaysFromList : '["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]')(JSON.stringify(formData.getAll("availableDays")));
 
-    const duration = formData.get("duration") as string;
-    const returnDepartureTime = formData.get("returnDepartureTime") as string;
-    const returnArrivalTime = formData.get("returnArrivalTime") as string;
-    const returnDuration = formData.get("returnDuration") as string;
+    const duration = (formData.get("duration") as string) || "غير محدد";
+    const returnDepartureTime = formData.get("returnDepartureTime") as string || null;
+    const returnArrivalTime = formData.get("returnArrivalTime") as string || null;
+    const returnDuration = formData.get("returnDuration") as string || null;
+    const cabin = (formData.get("type") as string) || (formData.get("cabin") as string) || "ECONOMY";
 
     await prisma.flight.create({
       data: {
@@ -43,10 +46,11 @@ export async function createFlight(formData: FormData) {
         returnArrivalTime,
         returnDuration,
         airline,
+        cabin,
         price,
         isLastMinute,
         lastMinutePrice,
-        availableDays: availableDays.length > 2 ? availableDays : '["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]'
+        availableDays
       }
     });
 
@@ -54,6 +58,7 @@ export async function createFlight(formData: FormData) {
     await sendNotification("تمت الإضافة", `تمت إضافة عرض طيران جديد بنجاح.`, "success");
 
     revalidatePath("/admin/flights");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -73,6 +78,7 @@ export async function deleteFlight(id: string) {
     await sendNotification("تم الحذف", "تم إزالة عرض الطيران من النظام.", "warning");
 
     revalidatePath("/admin/flights");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -85,18 +91,21 @@ export async function updateFlight(id: string, formData: FormData) {
   try {
     const from = formData.get("from") as string;
     const to = formData.get("to") as string;
-    const departureTime = formData.get("departureTime") as string;
-    const arrivalTime = formData.get("arrivalTime") as string;
+    const departureTime = (formData.get("departureTime") as string) || "غير محدد";
+    const arrivalTime = (formData.get("arrivalTime") as string) || "غير محدد";
     const airline = formData.get("airline") as string;
     const price = parseFloat(formData.get("price") as string);
     const isLastMinute = formData.get("isLastMinute") === "on";
     const lastMinutePrice = formData.get("lastMinutePrice") ? parseFloat(formData.get("lastMinutePrice") as string) : null;
-    const availableDays = JSON.stringify(formData.getAll("availableDays"));
+    
+    const daysFromForm = formData.get("days") as string;
+    const availableDays = daysFromForm ? daysFromForm : (availableDaysFromList => availableDaysFromList.length > 2 ? availableDaysFromList : '["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]')(JSON.stringify(formData.getAll("availableDays")));
 
-    const duration = formData.get("duration") as string;
-    const returnDepartureTime = formData.get("returnDepartureTime") as string;
-    const returnArrivalTime = formData.get("returnArrivalTime") as string;
-    const returnDuration = formData.get("returnDuration") as string;
+    const duration = (formData.get("duration") as string) || "غير محدد";
+    const returnDepartureTime = formData.get("returnDepartureTime") as string || null;
+    const returnArrivalTime = formData.get("returnArrivalTime") as string || null;
+    const returnDuration = formData.get("returnDuration") as string || null;
+    const cabin = (formData.get("type") as string) || (formData.get("cabin") as string) || "ECONOMY";
 
     await prisma.flight.update({
       where: { id },
@@ -110,10 +119,11 @@ export async function updateFlight(id: string, formData: FormData) {
         returnArrivalTime,
         returnDuration,
         airline,
+        cabin,
         price,
         isLastMinute,
         lastMinutePrice,
-        availableDays: availableDays.length > 2 ? availableDays : '["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]'
+        availableDays
       }
     });
 
@@ -121,6 +131,7 @@ export async function updateFlight(id: string, formData: FormData) {
     await sendNotification("تم التعديل", "تم تحديث بيانات العرض بنجاح.", "info");
 
     revalidatePath("/admin/flights");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {

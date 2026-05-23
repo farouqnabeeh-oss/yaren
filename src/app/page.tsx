@@ -52,8 +52,8 @@ export default async function Home() {
       />
 
       {/* 1. Flight Booking Section - Now Linked to Database */}
-      <section className="py-24 bg-white overflow-hidden relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-slate-50 rounded-full blur-3xl -z-10" />
+      <section className="py-24 bg-slate-50 overflow-hidden relative border-t-4 border-primary/20 mb-12" id="flights">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-white rounded-full blur-3xl -z-10" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-right" dir="rtl">
           <div className="mb-16">
             <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">احجز رحلتك مباشرة ✈️</h2>
@@ -66,7 +66,9 @@ export default async function Home() {
       </section>
 
       {/* 2. Bus Trips Section - Dynamic from Dashboard */}
-      <BusTrips initialTrips={busTrips} />
+      <section className="py-24 bg-gray-50 border-t border-slate-200 mb-12" id="bus-trips">
+        <BusTrips initialTrips={busTrips} />
+      </section>
 
       {/* 3. Hotel Booking Engine - Manual Seasonal Pricing (SPO) */}
       <section className="py-24 bg-white" id="hotels">

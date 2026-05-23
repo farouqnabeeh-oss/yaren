@@ -4,14 +4,14 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
 const prismaClientSingleton = () => {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
   if (!connectionString) {
     return new PrismaClient();
   }
 
   // Optimized for high-latency connections (Japan to US)
-  const pool = new Pool({ 
+  const pool = new Pool({
     connectionString,
     ssl: {
       rejectUnauthorized: false
@@ -20,7 +20,7 @@ const prismaClientSingleton = () => {
     idleTimeoutMillis: 30000,
     max: 10 // Limit pool size for serverless
   });
-  
+
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };

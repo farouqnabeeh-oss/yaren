@@ -107,7 +107,7 @@ export default async function AdminHome() {
   const totalItems = (statsData.hotelsCount + statsData.tripsCount + statsData.flightsCount + statsData.busCount) || 1;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pb-20 pt-4" dir="rtl">
+    <div className="max-w-5xl mx-auto px-2 pb-20 pt-4" dir="rtl">
       
       {/* Premium Header */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16 relative">

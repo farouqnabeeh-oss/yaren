@@ -4,11 +4,18 @@ import TripCard from "@/components/ui/TripCard";
 import prisma from "@/lib/prisma";
 
 const FeaturedTrips = async () => {
-  const trips = await prisma.trip.findMany({
-    where: { type: "organized" },
-    take: 6,
-    orderBy: { createdAt: "desc" }
-  });
+  const trips = await (async () => {
+    try {
+      return await prisma.trip.findMany({
+        where: { type: "organized" },
+        take: 6,
+        orderBy: { createdAt: "desc" },
+      });
+    } catch (error) {
+      console.error("Failed to fetch featured trips:", error);
+      return [];
+    }
+  })();
 
   // If no trips in DB yet, show nothing or empty state
   if (trips.length === 0) return null;

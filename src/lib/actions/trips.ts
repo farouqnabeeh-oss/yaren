@@ -20,7 +20,7 @@ export async function createTrip(formData: FormData) {
     const title = formData.get("title") as string;
     const price = parseFloat(formData.get("price") as string);
     const duration = formData.get("duration") as string;
-    const date = formData.get("date") as string;
+    const date = (formData.get("date") as string) || "متوفر دائماً";
     const image = formData.get("image") as string;
     const features = formData.get("features") as string; // JSON string
     const description = formData.get("description") as string || "رحلة سياحية مميزة مع يارين تورز.";
@@ -48,6 +48,7 @@ export async function createTrip(formData: FormData) {
     await sendNotification("تمت الإضافة", `تمت إضافة رحلة "${title}" بنجاح.`, "success");
 
     revalidatePath("/admin/trips");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -67,6 +68,7 @@ export async function deleteTrip(id: string) {
     await sendNotification("تم الحذف", "تمت إزالة الرحلة من النظام.", "warning");
 
     revalidatePath("/admin/trips");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -80,7 +82,7 @@ export async function updateTrip(id: string, formData: FormData) {
     const title = formData.get("title") as string;
     const price = parseFloat(formData.get("price") as string);
     const duration = formData.get("duration") as string;
-    const date = formData.get("date") as string;
+    const date = (formData.get("date") as string) || "متوفر دائماً";
     const image = formData.get("image") as string;
     const description = formData.get("description") as string;
     const youtubeUrl = formData.get("youtubeUrl") as string;
@@ -112,6 +114,7 @@ export async function updateTrip(id: string, formData: FormData) {
     await sendNotification("تم التعديل", `تم تحديث بيانات رحلة "${title}" بنجاح.`, "info");
 
     revalidatePath("/admin/trips");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {

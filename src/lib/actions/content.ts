@@ -32,6 +32,7 @@ export async function createBusTrip(formData: FormData) {
     await sendNotification("تمت الإضافة", `تمت إضافة خط باص جديد بنجاح.`, "success");
 
     revalidatePath("/admin/bus");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -49,6 +50,7 @@ export async function deleteBusTrip(id: string) {
     await sendNotification("تم الحذف", "تم إزالة خط الباص من النظام.", "warning");
 
     revalidatePath("/admin/bus");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -74,6 +76,7 @@ export async function updateBusTrip(id: string, formData: FormData) {
     await sendNotification("تم التعديل", "تم تحديث بيانات خط الباص بنجاح.", "info");
 
     revalidatePath("/admin/bus");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {

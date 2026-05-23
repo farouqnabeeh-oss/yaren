@@ -92,13 +92,70 @@ const Hero = ({ videoUrl, phone, title, subtitle }: { videoUrl?: string; phone?:
                 شاهد فيديونا
               </motion.button>
             </div>
+
+            {/* 5 Services Cards - Directly accessible */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.8 }}
+              className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto px-2"
+            >
+              {[
+                { 
+                  title: "حجز طيران", 
+                  icon: "✈️", 
+                  targetId: "flights", 
+                  bgColor: "from-blue-500/20 to-blue-600/10 border-blue-500/30 text-blue-400 hover:border-blue-500 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]" 
+                },
+                { 
+                  title: "رحلات منظمة", 
+                  icon: "🗺️", 
+                  targetId: "trips", 
+                  bgColor: "from-emerald-500/20 to-emerald-600/10 border-emerald-500/30 text-emerald-400 hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]" 
+                },
+                { 
+                  title: "حجز باصات", 
+                  icon: "🚌", 
+                  targetId: "bus-trips", 
+                  bgColor: "from-orange-500/20 to-orange-600/10 border-orange-500/30 text-orange-400 hover:border-orange-500 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]" 
+                },
+                { 
+                  title: "فنادق ومنتجعات", 
+                  icon: "🏨", 
+                  targetId: "hotels", 
+                  bgColor: "from-pink-500/20 to-pink-600/10 border-pink-500/30 text-pink-400 hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.3)]" 
+                },
+                { 
+                  title: "معابر وإنترنت", 
+                  icon: "🌐", 
+                  targetId: "crossings", 
+                  bgColor: "from-purple-500/20 to-purple-600/10 border-purple-500/30 text-purple-400 hover:border-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]" 
+                },
+              ].map((service, idx) => (
+                <motion.button
+                  key={idx}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const el = document.getElementById(service.targetId);
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth" });
+                    }
+                  }}
+                  className={`flex flex-col items-center justify-center p-6 rounded-[2rem] border backdrop-blur-md bg-gradient-to-br transition-all cursor-pointer ${service.bgColor}`}
+                >
+                  <span className="text-4xl mb-3 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]">{service.icon}</span>
+                  <span className="font-black text-sm tracking-tight text-white">{service.title}</span>
+                </motion.button>
+              ))}
+            </motion.div>
           </motion.div>
 
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
             className="mt-20 grid grid-cols-3 gap-6 max-w-2xl mx-auto"
           >
             {[

@@ -16,6 +16,7 @@ import {
   X
 } from "lucide-react";
 import { getHotels, createHotel, deleteHotel, updateHotel } from "@/lib/actions/hotels";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const HotelsManager = () => {
@@ -26,6 +27,7 @@ const HotelsManager = () => {
   const [imageMode, setImageMode] = useState<"url" | "file">("url");
   const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => { loadHotels(); }, []);
   const loadHotels = async () => { const data = await getHotels(); setHotels(data); };
@@ -73,6 +75,8 @@ const HotelsManager = () => {
     if (result && result.success) {
       setIsModalOpen(false);
       await loadHotels();
+      router.refresh();
+      router.replace("/admin");
     } else {
       alert("خطأ في الحفظ");
     }
@@ -80,7 +84,11 @@ const HotelsManager = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("حذف هذا الفندق؟")) { await deleteHotel(id); loadHotels(); }
+    if (confirm("حذف هذا الفندق؟")) { 
+      await deleteHotel(id); 
+      await loadHotels(); 
+      router.refresh();
+    }
   };
 
   return (
@@ -128,7 +136,7 @@ const HotelsManager = () => {
                   <div className="text-right">
                     <h3 className="text-sm font-bold text-slate-900">{hotel.name}</h3>
                     <div className="flex items-center gap-3 mt-1.5">
-                       <span className="flex items-center gap-1 text-[10px] text-slate-400 font-medium"><MapPin size={10} /> {hotel.city}</span>
+                       <span className="flex items-center gap-1 text-[10px] text-slate-400 font-medium"><MapPin size={10} /> {hotel.region || hotel.city}</span>
                        <div className="w-1 h-1 bg-slate-100 rounded-full" />
                        <span className="flex items-center gap-0.5 text-[10px] text-amber-500 font-bold">{hotel.stars} <Star size={10} className="fill-amber-500" /></span>
                     </div>
@@ -181,7 +189,7 @@ const HotelsManager = () => {
                  <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2 text-right">
                        <label className="text-[11px] font-bold text-slate-500 mr-2">المدينة</label>
-                       <input name="city" defaultValue={editingHotel?.city} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3.5 px-5 text-sm text-slate-900 font-medium outline-none focus:bg-white focus:border-slate-900 transition-all text-right" required />
+                       <input name="region" defaultValue={editingHotel?.region || editingHotel?.city} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3.5 px-5 text-sm text-slate-900 font-medium outline-none focus:bg-white focus:border-slate-900 transition-all text-right" required />
                     </div>
                     <div className="space-y-2 text-right">
                        <label className="text-[11px] font-bold text-slate-500 mr-2">النجوم</label>

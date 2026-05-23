@@ -18,7 +18,7 @@ export async function getHotels() {
 export async function createHotel(formData: FormData) {
   try {
     const name = formData.get("name") as string;
-    const region = formData.get("region") as string;
+    const region = (formData.get("region") || formData.get("city")) as string;
     const stars = parseInt(formData.get("stars") as string);
     const image = formData.get("image") as string;
     
@@ -48,6 +48,7 @@ export async function createHotel(formData: FormData) {
     await sendNotification("تمت الإضافة", `تمت إضافة الفندق "${name}" للنظام بنجاح.`, "success");
 
     revalidatePath("/admin/hotels");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -67,6 +68,7 @@ export async function deleteHotel(id: string) {
     await sendNotification("تم الحذف", "تمت إزالة الفندق من النظام.", "warning");
 
     revalidatePath("/admin/hotels");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -78,7 +80,7 @@ export async function deleteHotel(id: string) {
 export async function updateHotel(id: string, formData: FormData) {
   try {
     const name = formData.get("name") as string;
-    const region = formData.get("region") as string;
+    const region = (formData.get("region") || formData.get("city")) as string;
     const stars = parseInt(formData.get("stars") as string);
     const image = formData.get("image") as string;
     const pricingMatrix = formData.get("pricingMatrix") as string || "{}";
@@ -98,6 +100,7 @@ export async function updateHotel(id: string, formData: FormData) {
     await sendNotification("تم التعديل", `تم تحديث بيانات الفندق "${name}" بنجاح.`, "info");
 
     revalidatePath("/admin/hotels");
+    revalidatePath("/admin");
     revalidatePath("/");
     return { success: true };
   } catch (error) {

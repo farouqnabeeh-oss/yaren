@@ -1,125 +1,93 @@
 "use client";
-
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Lock, Mail, Loader2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import { signIn } from "next-auth/react";
+import { Mail, Lock } from "lucide-react";
 
-export default function LoginPage() {
+export default function AdminLogin() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
+    setLoading(true);
+    setError(null);
     try {
-      const res = await signIn("credentials", {
-        username,
-        password,
-        redirect: false,
-      });
-
-      if (res?.error) {
-        setError("بيانات الدخول غير صحيحة");
+      const result = await signIn("credentials", { redirect: false, username, password });
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.ok) {
+        router.replace("/admin");
       } else {
-        router.push("/admin");
+        setError("فشل تسجيل الدخول");
       }
     } catch (err) {
-      setError("حدث خطأ أثناء تسجيل الدخول");
+      setError("حدث خطأ غير متوقع");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-6 relative overflow-hidden" dir="rtl">
-      {/* Subtle Background Accent */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-orange-50 rounded-full blur-[120px] -z-10 opacity-50" />
-      <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-blue-50 rounded-full blur-[100px] -z-10 opacity-50" />
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-[440px]"
-      >
-        <div className="bg-white rounded-[2.5rem] p-10 md:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100 relative">
-          <div className="text-center mb-12">
-            <Link href="/" className="inline-block mb-8 hover:scale-105 transition-transform">
-              <img src="/logo.png" alt="Logo" className="w-20 h-20 object-contain mx-auto" />
-            </Link>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-3">مرحباً بك مجدداً</h1>
-            <p className="text-slate-400 font-medium">سجل الدخول لإدارة عالم يارين تورز</p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4 w-full">
+      <div className="w-full max-w-sm bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 transition-transform transform hover:scale-[1.02]">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <svg className="w-20 h-20 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2l9 21H3L12 2z" />
+          </svg>
+        </div>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">تسجيل الدخول إلى لوحة الإدارة</h1>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">اسم المستخدم</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                id="username"
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white/60 placeholder-gray-500"
+                placeholder="admin"
+                dir="ltr"
+                suppressHydrationWarning
+              />
+            </div>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">اسم المستخدم</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 right-5 flex items-center text-slate-300 group-focus-within:text-slate-900 transition-colors">
-                  <Mail size={18} />
-                </div>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-slate-50 border-none rounded-2xl py-5 pr-14 pl-6 text-slate-900 font-bold outline-none ring-2 ring-transparent focus:ring-slate-900/5 transition-all"
-                  placeholder="admin"
-                  required
-                />
-              </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white/60 placeholder-gray-500"
+                placeholder="••••••••"
+                dir="ltr"
+                suppressHydrationWarning
+              />
             </div>
-
-            <div className="space-y-2">
-              <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">كلمة المرور</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 right-5 flex items-center text-slate-300 group-focus-within:text-slate-900 transition-colors">
-                  <Lock size={18} />
-                </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-50 border-none rounded-2xl py-5 pr-14 pl-6 text-slate-900 font-bold outline-none ring-2 ring-transparent focus:ring-slate-900/5 transition-all"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-            </div>
-
-            {error && (
-              <motion.p 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-red-500 text-sm font-bold text-center bg-red-50 py-3 rounded-xl border border-red-100"
-              >
-                {error}
-              </motion.p>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-slate-900 hover:bg-black text-white py-5 rounded-[1.5rem] font-black text-lg transition-all shadow-2xl shadow-slate-900/20 disabled:opacity-50 flex items-center justify-center gap-3"
-            >
-              {isLoading ? <Loader2 className="animate-spin" /> : "دخول للوحة التحكم"}
-            </button>
-          </form>
-        </div>
-
-        <div className="mt-10 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-900 font-bold text-sm transition-colors group">
-            <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
-            العودة للموقع الرئيسي
-          </Link>
-        </div>
-      </motion.div>
+          </div>
+          {error && (
+            <p className="text-center text-red-600 text-sm font-medium">{error}</p>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-full transition-opacity disabled:opacity-50"
+          >
+            {loading ? "جاري التحقق…" : "تسجيل الدخول"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

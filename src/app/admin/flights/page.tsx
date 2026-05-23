@@ -11,6 +11,7 @@ import {
   X
 } from "lucide-react";
 import { getFlights, createFlight, deleteFlight, updateFlight } from "@/lib/actions/flights";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const FlightsManager = () => {
@@ -18,6 +19,7 @@ const FlightsManager = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFlight, setEditingFlight] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
 
   useEffect(() => { loadFlights(); }, []);
   const loadFlights = async () => { const data = await getFlights(); setFlights(data); };
@@ -30,12 +32,21 @@ const FlightsManager = () => {
     setIsSaving(true);
     const formData = new FormData(e.currentTarget);
     const result = editingFlight ? await updateFlight(editingFlight.id, formData) : await createFlight(formData);
-    if (result && result.success) { setIsModalOpen(false); await loadFlights(); }
+    if (result && result.success) { 
+      setIsModalOpen(false); 
+      await loadFlights(); 
+      router.refresh();
+      router.replace("/admin");
+    }
     setIsSaving(false);
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("حذف العرض؟")) { await deleteFlight(id); loadFlights(); }
+    if (confirm("حذف العرض؟")) { 
+      await deleteFlight(id); 
+      await loadFlights(); 
+      router.refresh();
+    }
   };
 
   return (
@@ -103,9 +114,9 @@ const FlightsManager = () => {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-end gap-6 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-                  <span>{flight.days}</span>
+                  <span>{flight.availableDays || flight.days}</span>
                   <div className="w-1 h-1 bg-slate-100 rounded-full" />
-                  <span>{flight.type}</span>
+                  <span>{flight.cabin || flight.type}</span>
                   <div className="w-1 h-1 bg-slate-100 rounded-full" />
                   <span className="text-slate-900">{flight.airline}</span>
                 </div>
@@ -153,11 +164,11 @@ const FlightsManager = () => {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2 text-right">
                     <label className="text-[11px] font-bold text-slate-500 mr-2">الأيام</label>
-                    <input name="days" defaultValue={editingFlight?.days} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3.5 px-5 text-sm text-slate-900 font-medium outline-none focus:bg-white focus:border-slate-900 transition-all text-right" placeholder="مثلاً: يومياً" required />
+                    <input name="days" defaultValue={editingFlight?.availableDays || editingFlight?.days} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3.5 px-5 text-sm text-slate-900 font-medium outline-none focus:bg-white focus:border-slate-900 transition-all text-right" placeholder="مثلاً: يومياً" required />
                   </div>
                   <div className="space-y-2 text-right">
                     <label className="text-[11px] font-bold text-slate-500 mr-2">نوع الرحلة</label>
-                    <input name="type" defaultValue={editingFlight?.type} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3.5 px-5 text-sm text-slate-900 font-medium outline-none focus:bg-white focus:border-slate-900 transition-all text-right" placeholder="مثلاً: ذهاب وإياب" required />
+                    <input name="type" defaultValue={editingFlight?.cabin || editingFlight?.type} className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3.5 px-5 text-sm text-slate-900 font-medium outline-none focus:bg-white focus:border-slate-900 transition-all text-right" placeholder="مثلاً: ذهاب وإياب" required />
                   </div>
                 </div>
 
