@@ -96,8 +96,9 @@ export async function updateTrip(id: string, formData: FormData) {
       price,
       duration,
       date,
-      image,
     };
+
+    if (image) dataToUpdate.image = image;
 
     if (description) dataToUpdate.description = description;
     if (youtubeUrl) dataToUpdate.youtubeUrl = youtubeUrl;

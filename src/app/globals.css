@@ -2,12 +2,12 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #121212;
+  --foreground: #0f172a;
   --primary: #f8a401;
   --primary-foreground: #ffffff;
-  --secondary: #00487c;
+  --secondary: #1d8cd8;
   --secondary-foreground: #ffffff;
-  --accent: #00487c;
+  --accent: #1d8cd8;
   --accent-foreground: #ffffff;
 }
 
@@ -21,13 +21,6 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617;
-    --foreground: #f8fafc;
-  }
 }
 
 /* Accessibility Support */

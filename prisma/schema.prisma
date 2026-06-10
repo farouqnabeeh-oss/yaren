@@ -109,6 +109,8 @@ model SiteSettings {
   heroSubtitle  String @default("استكشف أفضل الوجهات السياحية بإرشاد عربي كامل وأعلى معايير الراحة.")
   aboutTitle    String @default("يارين تورز.. نرسم لكم خارطة العالم")
   aboutText     String @default("بوابتكم الدائمة لاكتشاف العالم بأعلى معايير الراحة والتنظيم.")
+  eSimoCode     String @default("YAREN")
+  eSimoDiscount String @default("10%")
 }
 
 model Notification {
@@ -127,3 +129,37 @@ model ActivityLog {
   adminName String?
   createdAt DateTime @default(now())
 }
+
+model Offer {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  image         String
+  price         String
+  originalPrice String?
+  tag           String?  // e.g., "الأكثر مبيعاً", "خصم 20%"
+  timeLeft      String?  // e.g., "يومين متبقيين"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Crossing {
+  id        String   @id @default(cuid())
+  name      String
+  link      String
+  hoursLink String
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Expert {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  image     String
+  bio       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

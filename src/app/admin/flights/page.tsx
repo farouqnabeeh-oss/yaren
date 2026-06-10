@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const FlightsManager = () => {
   const [flights, setFlights] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFlight, setEditingFlight] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -23,6 +24,21 @@ const FlightsManager = () => {
 
   useEffect(() => { loadFlights(); }, []);
   const loadFlights = async () => { const data = await getFlights(); setFlights(data); };
+
+  useEffect(() => {
+    const handleSearch = (e: Event) => {
+      const query = (e as CustomEvent).detail;
+      setSearchQuery(query || "");
+    };
+    window.addEventListener("admin-search", handleSearch);
+    return () => window.removeEventListener("admin-search", handleSearch);
+  }, []);
+
+  const filteredFlights = flights.filter(flight => 
+    (flight.to && flight.to.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (flight.from && flight.from.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (flight.airline && flight.airline.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   const openAddModal = () => { setEditingFlight(null); setIsModalOpen(true); };
   const openEditModal = (flight: any) => { setEditingFlight(flight); setIsModalOpen(true); };
@@ -36,7 +52,6 @@ const FlightsManager = () => {
       setIsModalOpen(false); 
       await loadFlights(); 
       router.refresh();
-      router.replace("/admin");
     }
     setIsSaving(false);
   };
@@ -68,13 +83,13 @@ const FlightsManager = () => {
 
       {/* List - Soft Minimal Ticket Feel */}
       <div className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden">
-        {flights.length === 0 ? (
+        {filteredFlights.length === 0 ? (
           <div className="py-24 text-center">
-            <p className="text-slate-300 font-bold text-sm">لا توجد عروض طيران حالياً</p>
+            <p className="text-slate-300 font-bold text-sm">لا توجد عروض طيران مطابقة للبحث</p>
           </div>
         ) : (
           <div className="divide-y divide-slate-50">
-            {flights.map((flight) => (
+            {filteredFlights.map((flight) => (
               <motion.div
                 key={flight.id}
                 className="group p-8 hover:bg-slate-50/50 transition-all"

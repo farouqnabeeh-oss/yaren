@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const BusManager = () => {
   const [trips, setTrips] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTrip, setEditingTrip] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,6 +28,21 @@ const BusManager = () => {
   useEffect(() => { loadTrips(); }, []);
   const router = useRouter();
   const loadTrips = async () => { const data = await getBusTrips(); setTrips(data); };
+
+  useEffect(() => {
+    const handleSearch = (e: Event) => {
+      const query = (e as CustomEvent).detail;
+      setSearchQuery(query || "");
+    };
+    window.addEventListener("admin-search", handleSearch);
+    return () => window.removeEventListener("admin-search", handleSearch);
+  }, []);
+
+  const filteredTrips = trips.filter(trip => 
+    trip.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (trip.from && trip.from.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (trip.to && trip.to.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   const openAddModal = () => { setEditingTrip(null); setIsModalOpen(true); };
   const openEditModal = (trip: any) => { setEditingTrip(trip); setIsModalOpen(true); };
@@ -42,7 +58,6 @@ const BusManager = () => {
         setIsModalOpen(false);
         await loadTrips();
         router.refresh();
-        router.replace("/admin");
       } else {
         setSaveError((result as any).error || "خطأ أثناء الحفظ");
       }
@@ -79,13 +94,13 @@ const BusManager = () => {
 
       {/* List - Soft Minimal */}
       <div className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden">
-        {trips.length === 0 ? (
+        {filteredTrips.length === 0 ? (
           <div className="py-24 text-center">
-            <p className="text-slate-300 font-bold text-sm">لا توجد خطوط باصات حالياً</p>
+            <p className="text-slate-300 font-bold text-sm">لا توجد خطوط باصات مطابقة للبحث</p>
           </div>
         ) : (
           <div className="divide-y divide-slate-50">
-            {trips.map((trip) => (
+            {filteredTrips.map((trip) => (
               <motion.div
                 key={trip.id}
                 className="group p-8 hover:bg-slate-50/50 transition-all"

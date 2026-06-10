@@ -46,7 +46,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-slate-950 text-white pt-24 pb-12 overflow-hidden relative">
+    <footer className="bg-slate-900 text-white pt-24 pb-12 overflow-hidden relative">
       {/* Background Glows */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
@@ -119,9 +119,9 @@ const Footer = () => {
             <h4 className="text-lg font-black mb-8 border-b border-white/5 pb-4">الدعم القانوني</h4>
             <ul className="space-y-4">
               {[
-                { name: "سياسة الخصوصية", href: "/privacy" },
-                { name: "الإلغاء والاسترجاع", href: "/refunds" },
-                { name: "شروط الخدمة", href: "/terms" },
+                { name: "سياسة الخصوصية", href: "/policies#privacy" },
+                { name: "الإلغاء والاسترجاع", href: "/policies#refund" },
+                { name: "شروط الخدمة", href: "/policies#terms" },
                 { name: "الأسئلة الشائعة", href: "/#faq" },
                 { name: "تذاكر الدعم", href: "/contact" }
               ].map((link) => (

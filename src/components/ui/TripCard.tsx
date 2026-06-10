@@ -28,10 +28,15 @@ interface TripCardProps {
 const TripCard: React.FC<TripCardProps> = ({ 
   id, title, image, price, duration, features, type, availableDays, cities, rating = 4.9, reviewCount = 124, date, guide, showGuide = true
 }) => {
+  const datesToRender = Array.from(new Set([
+    ...(availableDays || []),
+    ...(date ? [date] : [])
+  ])).filter(Boolean);
+
   const [showForm, setShowForm] = useState(false);
   const [pax, setPax] = useState(1);
   const [selectedCity, setSelectedCity] = useState(cities?.[0] || "");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(datesToRender[0] || "");
 
   const handleWhatsAppBooking = () => {
     const totalPrice = pax * price;
@@ -48,7 +53,7 @@ const TripCard: React.FC<TripCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[2rem] overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
+    <div className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl hover:shadow-slate-200/50 hover:border-primary/50 transition-all duration-500 group flex flex-col h-full">
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden">
         <img 
@@ -143,16 +148,25 @@ const TripCard: React.FC<TripCardProps> = ({
                 {/* Date Selection */}
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 mb-1 uppercase tracking-wider">التاريخ المتاح</label>
-                  <select 
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold focus:ring-2 ring-primary outline-none"
-                  >
-                    <option value="">اختر اليوم</option>
-                    {availableDays?.map(d => (
-                      <option key={d} value={d}>{d}</option>
-                    ))}
-                  </select>
+                  {datesToRender.length > 0 ? (
+                    <select 
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold focus:ring-2 ring-primary outline-none"
+                    >
+                      <option value="">اختر اليوم</option>
+                      {datesToRender.map(d => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input 
+                      type="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold focus:ring-2 ring-primary outline-none"
+                    />
+                  )}
                 </div>
 
                 {/* Pax Count */}

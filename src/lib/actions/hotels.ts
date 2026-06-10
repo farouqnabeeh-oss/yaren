@@ -85,15 +85,18 @@ export async function updateHotel(id: string, formData: FormData) {
     const image = formData.get("image") as string;
     const pricingMatrix = formData.get("pricingMatrix") as string || "{}";
 
+    const dataToUpdate: any = {
+      name,
+      region,
+      stars,
+      pricingMatrix
+    };
+
+    if (image) dataToUpdate.image = image;
+
     await prisma.hotel.update({
       where: { id },
-      data: {
-        name,
-        region,
-        stars,
-        image,
-        pricingMatrix
-      }
+      data: dataToUpdate
     });
 
     await logActivity("تعديل فندق", `تم تعديل بيانات الفندق: ${name}`);

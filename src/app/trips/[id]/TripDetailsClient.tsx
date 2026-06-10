@@ -22,16 +22,29 @@ const TripDetailsClient = ({ trip }: { trip: any }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [formData, setFormData] = useState({ name: "", guests: "1", city: "الناصرة" });
 
-  const features = trip.features ? JSON.parse(trip.features) : [];
-  const hotspots: Hotspot[] = trip.hotspots ? JSON.parse(trip.hotspots) : [];
+  const safeParseJSON = (str: string | null | undefined, fallback: any = []) => {
+    if (!str) return fallback;
+    try {
+      const parsed = JSON.parse(str);
+      return Array.isArray(parsed) || typeof parsed === "object" ? parsed : fallback;
+    } catch (e) {
+      if (typeof str === "string" && str.includes(",")) {
+        return str.split(",").map((item: string) => item.trim()).filter(Boolean);
+      }
+      return [str];
+    }
+  };
+
+  const features = safeParseJSON(trip.features);
+  const hotspots: Hotspot[] = safeParseJSON(trip.hotspots);
   // For demo if empty:
   const demoHotspots: Hotspot[] = hotspots.length > 0 ? hotspots : [
     { x: 30, y: 40, title: "المعلم الأول", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=500", desc: "نقطة استكشاف مذهلة" },
     { x: 60, y: 60, title: "المعلم الثاني", image: "https://images.unsplash.com/photo-1512453979798-5ea444f888e3?w=500", desc: "أجمل الإطلالات في الرحلة" }
   ];
 
-  const includes = trip.includes ? JSON.parse(trip.includes) : ["تذاكر الطيران ذهاب وإياب", "الإقامة في فنادق 5 نجوم", "إفطار وعشاء يومي", "التنقلات في حافلة سياحية مكيفة"];
-  const excludes = trip.excludes ? JSON.parse(trip.excludes) : ["المصروف الشخصي", "الرحلات الاختيارية", "تأمين السفر"];
+  const includes = safeParseJSON(trip.includes, ["تذاكر الطيران ذهاب وإياب", "الإقامة في فنادق 5 نجوم", "إفطار وعشاء يومي", "التنقلات في حافلة سياحية مكيفة"]);
+  const excludes = safeParseJSON(trip.excludes, ["المصروف الشخصي", "الرحلات الاختيارية", "تأمين السفر"]);
 
   const handleBooking = (e: React.FormEvent) => {
     e.preventDefault();

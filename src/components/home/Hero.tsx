@@ -26,7 +26,7 @@ const Hero = ({ videoUrl, phone, title, subtitle }: { videoUrl?: string; phone?:
       >
         {/* Static cinematic background */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-slate-900/60 to-slate-950 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/60 to-white z-10" />
           <img
             src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=2000"
             alt="خلفية يارين تورز"
@@ -165,7 +165,7 @@ const Hero = ({ videoUrl, phone, title, subtitle }: { videoUrl?: string; phone?:
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="text-2xl md:text-4xl font-black text-primary/90">{stat.num}</div>
-                <div className="text-xs text-slate-400 font-bold mt-1">{stat.label}</div>
+                <div className="text-xs text-slate-300 font-bold mt-1">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -178,8 +178,8 @@ const Hero = ({ videoUrl, phone, title, subtitle }: { videoUrl?: string; phone?:
       </section>
 
       {/* ─── Featured YouTube Video Section ─── */}
-      <section className="py-24 bg-slate-950 overflow-hidden relative" id="video-section">
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      <section className="py-24 bg-slate-50 overflow-hidden relative border-t border-slate-100" id="video-section">
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -187,13 +187,13 @@ const Hero = ({ videoUrl, phone, title, subtitle }: { videoUrl?: string; phone?:
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="inline-block text-primary text-xs font-black uppercase tracking-widest mb-4 border border-primary/30 px-4 py-1.5 rounded-full bg-primary/10">
+            <span className="inline-block text-primary text-xs font-black uppercase tracking-widest mb-4 border border-primary/20 px-4 py-1.5 rounded-full bg-primary/5">
               رحلاتنا بعيونكم
             </span>
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 mb-4">
               اكتشف <span className="text-primary">يارين تورز</span> من الداخل
             </h2>
-            <p className="text-slate-400 font-medium max-w-xl mx-auto">
+            <p className="text-slate-600 font-medium max-w-xl mx-auto">
               شاهد كيف نصنع تجارب سفر لا تُنسى مع مرشدينا العرب في أجمل وجهات العالم.
             </p>
           </motion.div>
@@ -204,7 +204,7 @@ const Hero = ({ videoUrl, phone, title, subtitle }: { videoUrl?: string; phone?:
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(234,88,12,0.3)] border border-white/10 group"
+            className="relative rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-200 group"
             style={{ aspectRatio: "16/9" }}
           >
             <iframe

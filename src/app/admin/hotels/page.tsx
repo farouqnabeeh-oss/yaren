@@ -21,6 +21,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const HotelsManager = () => {
   const [hotels, setHotels] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingHotel, setEditingHotel] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -31,6 +32,20 @@ const HotelsManager = () => {
 
   useEffect(() => { loadHotels(); }, []);
   const loadHotels = async () => { const data = await getHotels(); setHotels(data); };
+
+  useEffect(() => {
+    const handleSearch = (e: Event) => {
+      const query = (e as CustomEvent).detail;
+      setSearchQuery(query || "");
+    };
+    window.addEventListener("admin-search", handleSearch);
+    return () => window.removeEventListener("admin-search", handleSearch);
+  }, []);
+
+  const filteredHotels = hotels.filter(hotel => 
+    hotel.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (hotel.region && hotel.region.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   const openAddModal = () => {
     setEditingHotel(null);
@@ -76,7 +91,6 @@ const HotelsManager = () => {
       setIsModalOpen(false);
       await loadHotels();
       router.refresh();
-      router.replace("/admin");
     } else {
       alert("خطأ في الحفظ");
     }
@@ -110,13 +124,13 @@ const HotelsManager = () => {
 
       {/* List View - Soft Minimal */}
       <div className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden">
-        {hotels.length === 0 ? (
+        {filteredHotels.length === 0 ? (
           <div className="py-24 text-center">
-            <p className="text-slate-300 font-bold text-sm">لا توجد فنادق مضافة حالياً</p>
+            <p className="text-slate-300 font-bold text-sm">لا توجد فنادق مطابقة للبحث</p>
           </div>
         ) : (
           <div className="divide-y divide-slate-50">
-            {hotels.map((hotel) => (
+            {filteredHotels.map((hotel) => (
               <motion.div 
                 key={hotel.id} 
                 className="group flex items-center justify-between p-6 hover:bg-slate-50/50 transition-all"

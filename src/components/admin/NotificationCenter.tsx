@@ -29,11 +29,11 @@ const NotificationCenter = () => {
     <div className="relative">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 flex items-center justify-center bg-slate-50/50 rounded-xl hover:bg-slate-100 transition-all text-slate-300 relative"
+        className="w-10 h-10 flex items-center justify-center bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 hover:text-slate-900 transition-all text-slate-600 relative"
       >
         <Bell size={18} />
         {notifications.length > 0 && (
-          <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-slate-900 rounded-full border border-white" />
+          <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 rounded-full border border-white" />
         )}
       </button>
 
@@ -49,7 +49,7 @@ const NotificationCenter = () => {
             >
               <div className="p-6 border-b border-slate-50 flex items-center justify-between">
                 <h3 className="text-sm font-bold text-slate-900">التنبيهات</h3>
-                <span className="text-[10px] font-black text-slate-200 uppercase tracking-widest">{notifications.length} جديدة</span>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{notifications.length} جديدة</span>
               </div>
 
               <div className="max-h-[350px] overflow-y-auto">
@@ -71,7 +71,7 @@ const NotificationCenter = () => {
                   ))
                 ) : (
                   <div className="py-20 text-center">
-                    <p className="text-[10px] font-bold text-slate-200 uppercase tracking-widest">لا توجد تنبيهات</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">لا توجد تنبيهات</p>
                   </div>
                 )}
               </div>

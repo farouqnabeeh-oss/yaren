@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, Phone, MessageCircle, ChevronDown, Globe, Shield, Compass } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSettings } from "@/components/SettingsProvider";
@@ -10,6 +11,9 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const settings = useSettings();
+  const pathname = usePathname();
+
+  const isLightPage = ["/policies", "/contact", "/esim", "/crossings"].includes(pathname);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,21 +31,13 @@ const Navbar = () => {
       href: "#",
       subLinks: [
         { name: "رحلات منظمة", href: "/trips", desc: "رحلات سياحية متكاملة لكافة دول العالم" },
-        { name: "فنادق ومنتجعات", href: "/#hotels", desc: "أفضل الأسعار للفنادق المحلية والعالمية" },
-        { name: "توصيل باصات", href: "/#bus-trips", desc: "خدمة توصيل مريحة ودقيقة" },
+        { name: "فنادق ومنتجعات", href: "/hotels", desc: "أفضل الأسعار للفنادق المحلية والعالمية" },
+        { name: "توصيل باصات", href: "/bus", desc: "خدمة توصيل مريحة ودقيقة" },
         { name: "شرائح eSIMo", href: "/esim", desc: "ابق متصلاً أينما كنت في العالم" },
       ]
     },
     { name: "عروض خاصة", href: "/offers" },
-    {
-      name: "سياساتنا",
-      href: "#",
-      subLinks: [
-        { name: "سياسة الخصوصية", href: "/privacy", desc: "كيف نحمي بياناتك" },
-        { name: "الإلغاء والاسترجاع", href: "/refunds", desc: "ضمان حقوقك المالية" },
-        { name: "شروط الخدمة", href: "/terms", desc: "القواعد المنظمة للخدمة" },
-      ]
-    },
+    { name: "سياساتنا", href: "/policies" },
     { name: "اتصل بنا", href: "/contact" },
   ];
 
@@ -55,7 +51,9 @@ const Navbar = () => {
       <div
         className={`max-w-7xl mx-auto transition-all duration-500 border-b ${scrolled
             ? "bg-white/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2.5rem] border-white/20 py-2 px-8"
-            : "bg-transparent border-white/10 py-6 px-4 md:px-8"
+            : isLightPage
+              ? "bg-transparent border-slate-200/50 py-6 px-4 md:px-8"
+              : "bg-transparent border-white/10 py-6 px-4 md:px-8"
           }`}
       >
         <div className="flex justify-between items-center">
@@ -72,20 +70,25 @@ const Navbar = () => {
               <div key={link.name} className="relative group py-2">
                 <Link
                   href={link.href}
-                  className={`flex items-center gap-1 text-sm font-black transition-all ${scrolled ? "text-slate-600 hover:text-primary" : "text-white/80 hover:text-white"
-                    }`}
+                  className={`flex items-center gap-1 text-sm font-black transition-all ${
+                    scrolled 
+                      ? "text-slate-600 hover:text-primary" 
+                      : isLightPage
+                        ? "text-slate-700 hover:text-primary"
+                        : "text-white/80 hover:text-white"
+                  }`}
                 >
                   {link.name}
                   {link.subLinks && <ChevronDown size={14} className="group-hover:rotate-180 transition-transform" />}
                 </Link>
 
                 {/* Underline Hover Effect */}
-                <div className={`absolute bottom-0 right-0 h-0.5 bg-primary transition-all duration-300 ${scrolled ? "w-0 group-hover:w-full" : "w-0 group-hover:w-full bg-white"}`} />
+                <div className={`absolute bottom-0 right-0 h-0.5 bg-primary transition-all duration-300 ${scrolled ? "w-0 group-hover:w-full" : isLightPage ? "w-0 group-hover:w-full bg-primary" : "w-0 group-hover:w-full bg-white"}`} />
 
                 {/* Submenu Dropdown - Mega Menu Style */}
                 {link.subLinks && (
-                  <div className="absolute top-full right-0 mt-2 w-[450px] opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-500 z-[200]">
-                    <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 p-6 mt-4 overflow-hidden relative">
+                  <div className="absolute top-full right-0 pt-4 w-[450px] opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-500 z-[200]">
+                    <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 p-6 overflow-hidden relative">
                       <div className="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-l from-primary/100 via-primary/90 to-primary/80" />
                       <div className="grid grid-cols-1 gap-2">
                         {link.subLinks.map((sub) => (
@@ -113,17 +116,26 @@ const Navbar = () => {
               href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`px-6 py-3 rounded-2xl text-xs font-black flex items-center gap-2 transition-all transform hover:scale-105 shadow-xl ${scrolled
+              className={`px-6 py-3 rounded-2xl text-xs font-black flex items-center gap-2 transition-all transform hover:scale-105 shadow-xl ${
+                scrolled
                   ? "bg-slate-900 text-white shadow-slate-900/10 hover:bg-black"
-                  : "bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-white/20"
-                }`}
+                  : isLightPage
+                    ? "bg-slate-900 text-white hover:bg-black shadow-md"
+                    : "bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-white/20"
+              }`}
             >
               <MessageCircle size={18} className="text-primary" />
               تحدث مع خبير
             </Link>
             <Link
               href="/admin"
-              className={`p-3 rounded-2xl transition-all ${scrolled ? "bg-slate-100 text-slate-500 hover:text-primary" : "bg-white/5 text-white/50 hover:text-white"}`}
+              className={`p-3 rounded-2xl transition-all ${
+                scrolled 
+                  ? "bg-slate-100 text-slate-500 hover:text-primary" 
+                  : isLightPage
+                    ? "bg-slate-100 text-slate-600 hover:text-primary"
+                    : "bg-white/5 text-white/50 hover:text-white"
+              }`}
             >
               <Shield size={18} />
             </Link>
@@ -135,13 +147,19 @@ const Navbar = () => {
               href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`p-2 rounded-xl ${scrolled ? "bg-primary text-white" : "bg-white/10 text-white"}`}
+              className={`p-2 rounded-xl ${scrolled ? "bg-primary text-white" : isLightPage ? "bg-slate-900 text-white" : "bg-white/10 text-white"}`}
             >
               <Phone size={20} />
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 rounded-xl transition-colors ${scrolled ? "text-slate-900 bg-slate-100" : "text-white bg-white/10"}`}
+              className={`p-2 rounded-xl transition-colors ${
+                scrolled 
+                  ? "text-slate-900 bg-slate-100" 
+                  : isLightPage
+                    ? "text-slate-900 bg-slate-100"
+                    : "text-white bg-white/10"
+              }`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
