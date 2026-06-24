@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Globe, Wifi, Smartphone, DollarSign, Headset, Zap, ExternalLink, MapPin, Clock } from "lucide-react";
-import { getCrossings } from "@/lib/actions/crossings";
+// import removed; using fetch API for crossings
 
 export const ESimoSection = ({ code, discount }: { code?: string, discount?: string }) => {
   return (
@@ -98,10 +98,37 @@ export const BorderCrossings = () => {
   const [crossings, setCrossings] = useState<any[]>([]);
 
   useEffect(() => {
-    getCrossings().then((data) => {
-      if (data && data.length > 0) {
-        setCrossings(data);
-      } else {
+    fetch('/api/crossings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          setCrossings(data);
+        } else {
+          setCrossings([
+            {
+              name: "معبر نهر الأردن",
+              link: "https://www.iaa.gov.il/land-border-crossings/jordan-river/",
+              hoursLink: "https://www.iaa.gov.il/land-border-crossings/jordan-river/opening-hours-jorden-river/",
+              image: "https://images.unsplash.com/photo-1544984243-ec57ea16fe25?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+              name: "معبر طابا",
+              link: "https://www.iaa.gov.il/land-border-crossings/menachem-begin/",
+              hoursLink: "https://www.iaa.gov.il/land-border-crossings/menachem-begin/opening-hours-begin/",
+              image: "https://images.unsplash.com/photo-1506466010722-395aa2bef877?auto=format&fit=crop&q=80&w=800"
+            },
+            {
+              name: "معبر إسحاق رابين (العقبة)",
+              link: "https://www.iaa.gov.il/land-border-crossings/yitzhak-rabin/",
+              hoursLink: "https://www.iaa.gov.il/land-border-crossings/yitzhak-rabin/opening-hours-rabin/",
+              image: "https://images.unsplash.com/photo-1579606031828-567a42a03362?auto=format&fit=crop&q=80&w=800"
+            }
+          ]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching crossings:", err);
+        // fallback to defaults
         setCrossings([
           {
             name: "معبر نهر الأردن",
@@ -122,8 +149,7 @@ export const BorderCrossings = () => {
             image: "https://images.unsplash.com/photo-1579606031828-567a42a03362?auto=format&fit=crop&q=80&w=800"
           }
         ]);
-      }
-    });
+      });
   }, []);
 
   return (

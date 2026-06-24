@@ -1,7 +1,9 @@
 "use client";
 
+ 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Calendar, Users, MapPin, ChevronLeft, MessageCircle, Info } from "lucide-react";
 
 interface TripCardProps {
@@ -56,9 +58,11 @@ const TripCard: React.FC<TripCardProps> = ({
     <div className="bg-white rounded-[2.5rem] overflow-hidden border border-slate-200 shadow-lg hover:shadow-2xl hover:shadow-slate-200/50 hover:border-primary/50 transition-all duration-500 group flex flex-col h-full">
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden">
-        <img 
-          src={image} 
-          alt={title} 
+        <Image
+          src={image}
+          alt={title}
+          width={500}
+          height={300}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-black text-slate-900 border border-white/20 shadow-sm flex items-center gap-1.5">
@@ -224,7 +228,7 @@ const TripCard: React.FC<TripCardProps> = ({
                 </button>
               </div>
               <p className="text-[9px] font-bold text-slate-500 text-center px-4 leading-relaxed">
-                🎁 احجز الآن واحصل مجاناً على <span className="text-primary">"دليل يارين الشامل"</span> - دليلك السري لتجربة تفوق التوقعات لتعرف ماذا تأكل، وكيف تكون جاهزاً لرحلة ولا غلطة!
+                🎁 احجز الآن واحصل مجاناً على &quot;دليل يارين الشامل&quot; - دليلك السري لتجربة تفوق التوقعات لتعرف ماذا تأكل، وكيف تكون جاهزاً لرحلة ولا غلطة!
               </p>
             </div>
           </motion.div>

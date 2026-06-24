@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+// revalidatePath is imported dynamically inside mutation functions to avoid client bundle issues
 import { logActivity, sendNotification } from "./logs";
 
 export async function getCrossings() {
@@ -38,6 +38,8 @@ export async function createCrossing(formData: FormData) {
     await logActivity("إضافة معبر", `تمت إضافة معبر حدودي جديد: ${name}`);
     await sendNotification("تمت الإضافة", `تمت إضافة معبر "${name}" بنجاح.`, "success");
 
+    // Dynamically import revalidatePath for server-side only usage
+    const { revalidatePath } = await import('next/cache');
     revalidatePath("/admin/crossings");
     revalidatePath("/crossings");
     revalidatePath("/");
@@ -58,6 +60,8 @@ export async function deleteCrossing(id: string) {
     await logActivity("حذف معبر", `تم حذف المعبر: ${crossing?.name || id}`);
     await sendNotification("تم الحذف", "تمت إزالة المعبر من النظام.", "warning");
 
+    // Dynamically import revalidatePath for server-side only usage
+    const { revalidatePath } = await import('next/cache');
     revalidatePath("/admin/crossings");
     revalidatePath("/crossings");
     revalidatePath("/");
@@ -93,6 +97,8 @@ export async function updateCrossing(id: string, formData: FormData) {
     await logActivity("تعديل معبر", `تم تعديل معبر: ${name}`);
     await sendNotification("تم التعديل", `تم تحديث بيانات المعبر "${name}" بنجاح.`, "info");
 
+    // Dynamically import revalidatePath for server-side only usage
+    const { revalidatePath } = await import('next/cache');
     revalidatePath("/admin/crossings");
     revalidatePath("/crossings");
     revalidatePath("/");

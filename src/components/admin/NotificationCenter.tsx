@@ -9,16 +9,16 @@ const NotificationCenter = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  const loadNotifications = async () => {
+    const data = await getNotifications();
+    setNotifications(data);
+  };
+
   useEffect(() => {
     loadNotifications();
     const interval = setInterval(loadNotifications, 30000);
     return () => clearInterval(interval);
   }, []);
-
-  const loadNotifications = async () => {
-    const data = await getNotifications();
-    setNotifications(data);
-  };
 
   const handleMarkRead = async (id: string) => {
     await markAsRead(id);

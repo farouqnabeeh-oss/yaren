@@ -24,6 +24,13 @@ const TripsManager = () => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const loadTrips = async () => {
+    setIsLoading(true);
+    const data = await getTrips();
+    setTrips(data);
+    setIsLoading(false);
+  };
+
   useEffect(() => { loadTrips(); }, []);
 
   useEffect(() => {
@@ -34,13 +41,6 @@ const TripsManager = () => {
     window.addEventListener("admin-search", handleSearch);
     return () => window.removeEventListener("admin-search", handleSearch);
   }, []);
-
-  const loadTrips = async () => {
-    setIsLoading(true);
-    const data = await getTrips();
-    setTrips(data);
-    setIsLoading(false);
-  };
 
   const openAddModal = () => {
     setEditingTrip(null);
