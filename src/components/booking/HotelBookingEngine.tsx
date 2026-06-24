@@ -28,15 +28,28 @@ const HotelBookingEngine = ({ initialHotels = [] }: { initialHotels?: any[] }) =
   const [activeOptions, setActiveOptions] = useState<Record<string, string[]>>({});
   const [selectedMeals, setSelectedMeals] = useState<Record<string, string>>({});
 
-  // Parse DB JSON strings
-  const hotels = initialHotels.map(h => ({
-    ...h,
-    mealPlans: typeof h.mealPlans === "string" ? JSON.parse(h.mealPlans) : h.mealPlans,
-    roomTypes: typeof h.roomTypes === "string" ? JSON.parse(h.roomTypes) : h.roomTypes,
-    pricing: typeof h.pricingMatrix === "string" ? JSON.parse(h.pricingMatrix) : h.pricingMatrix,
-    mealSupplements: typeof h.mealSupplements === "string" ? JSON.parse(h.mealSupplements) : h.mealSupplements,
-    options: typeof h.options === "string" ? JSON.parse(h.options) : h.options,
-  }));
+  // Parse DB JSON strings safely
+  const hotels = initialHotels.map(h => {
+    const safeParse = (val: any, fallback: any = []) => {
+      if (typeof val === "string") {
+        try {
+          return JSON.parse(val);
+        } catch (e) {
+          return fallback;
+        }
+      }
+      return val || fallback;
+    };
+
+    return {
+      ...h,
+      mealPlans: safeParse(h.mealPlans, ["BB"]),
+      roomTypes: safeParse(h.roomTypes, ["DBL"]),
+      pricing: safeParse(h.pricingMatrix, {}),
+      mealSupplements: safeParse(h.mealSupplements, {}),
+      options: safeParse(h.options, []),
+    };
+  });
 
   const handleSearch = () => {
     // Filter hotels based on selected region

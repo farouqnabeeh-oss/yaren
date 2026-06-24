@@ -21,10 +21,24 @@ const FlightBooking = ({ initialFlights = [] }: { initialFlights?: any[] }) => {
   const [price, setPrice] = useState(0);
 
   // Dynamic database flights loading with strict fallbacks
-  const flights = initialFlights.length > 0 ? initialFlights.map(f => ({
-    ...f,
-    availableDays: typeof f.availableDays === "string" ? JSON.parse(f.availableDays) : f.availableDays
-  })) : [
+  const flights = initialFlights.length > 0 ? initialFlights.map(f => {
+    let parsedDays = f.availableDays;
+    if (typeof f.availableDays === "string") {
+      try {
+        parsedDays = JSON.parse(f.availableDays);
+      } catch (e) {
+        if (f.availableDays === "يوميا" || f.availableDays === "يومياً") {
+          parsedDays = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+        } else {
+          parsedDays = [f.availableDays];
+        }
+      }
+    }
+    return {
+      ...f,
+      availableDays: parsedDays
+    };
+  }) : [
     { id: "1", from: "عمان (AMM)", to: "اسطنبول (IST)", price: 350, isLastMinute: true, lastMinutePrice: 250, availableDays: ["الأحد", "الثلاثاء", "الخميس"], airline: "الملكية الأردنية (Royal Jordanian)", departureTime: "10:00", arrivalTime: "12:30", duration: "2h 30m", returnDepartureTime: "14:00", returnArrivalTime: "16:30", returnDuration: "2h 30m" },
     { id: "2", from: "اسطنبول (IST)", to: "عمان (AMM)", price: 350, isLastMinute: true, lastMinutePrice: 250, availableDays: ["الأحد", "الثلاثاء", "الخميس"], airline: "الخطوط التركية (Turkish Airlines)", departureTime: "15:00", arrivalTime: "17:30", duration: "2h 30m", returnDepartureTime: "19:00", returnArrivalTime: "21:30", returnDuration: "2h 30m" },
     { id: "3", from: "عمان (AMM)", to: "دبي (DXB)", price: 420, isLastMinute: false, lastMinutePrice: null, availableDays: ["الاثنين", "الأربعاء", "السبت"], airline: "طيران الإمارات (Emirates)", departureTime: "08:00", arrivalTime: "12:00", duration: "3h 00m", returnDepartureTime: "14:00", returnArrivalTime: "18:00", returnDuration: "3h 00m" }
