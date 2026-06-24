@@ -3,6 +3,11 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+async function revalidate(path: string) {
+  const { revalidatePath } = await import('next/cache');
+  revalidatePath(path);
+}
+
 export async function logActivity(action: string, details?: string, adminName: string = "Admin") {
   try {
     await (prisma as any).activityLog.create({

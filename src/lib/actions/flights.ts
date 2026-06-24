@@ -1,8 +1,13 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+// Dynamic import for revalidatePath to avoid bundling server-only modules
+async function revalidate(path: string) {
+  const { revalidatePath } = await import("next/cache");
+  return revalidatePath(path);
+}
 import { logActivity, sendNotification } from "./logs";
+import { revalidatePath } from "next/cache";
 
 export async function getFlights() {
   try {
@@ -57,9 +62,9 @@ export async function createFlight(formData: FormData) {
     await logActivity("إضافة طيران", `تمت إضافة عرض طيران: من ${from} إلى ${to}`);
     await sendNotification("تمت الإضافة", `تمت إضافة عرض طيران جديد بنجاح.`, "success");
 
-    revalidatePath("/admin/flights");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/flights");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error creating flight:", error);
@@ -77,9 +82,9 @@ export async function deleteFlight(id: string) {
     await logActivity("حذف طيران", `تم حذف عرض طيران: من ${flight?.from} إلى ${flight?.to}`);
     await sendNotification("تم الحذف", "تم إزالة عرض الطيران من النظام.", "warning");
 
-    revalidatePath("/admin/flights");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/flights");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error deleting flight:", error);

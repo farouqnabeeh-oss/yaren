@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-
+async function revalidate(path: string) {
+  const { revalidatePath } = await import('next/cache');
+  revalidatePath(path);
+}
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 import { logActivity, sendNotification } from "./logs";
 
 export async function getExperts() {
@@ -39,9 +41,9 @@ export async function createExpert(formData: FormData) {
     await logActivity("إضافة خبير سفر", `تمت إضافة خبير جديد: ${name}`);
     await sendNotification("تمت إضافة خبير سفر", `تمت إضافة الخبير "${name}" بنجاح.`, "success");
 
-    revalidatePath("/admin/experts");
-    revalidatePath("/about");
-    revalidatePath("/");
+await revalidate("/admin/experts");
+    await revalidate("/about");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error creating expert:", error);
@@ -59,9 +61,9 @@ export async function deleteExpert(id: string) {
     await logActivity("حذف خبير سفر", `تم حذف الخبير: ${expert?.name || id}`);
     await sendNotification("تم حذف خبير سفر", "تمت إزالة الخبير من النظام.", "warning");
 
-    revalidatePath("/admin/experts");
-    revalidatePath("/about");
-    revalidatePath("/");
+    await revalidate("/admin/experts");
+    await revalidate("/about");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error deleting expert:", error);
@@ -94,9 +96,9 @@ export async function updateExpert(id: string, formData: FormData) {
     await logActivity("تعديل خبير سفر", `تم تعديل خبير: ${name}`);
     await sendNotification("تم تعديل خبير سفر", `تم تحديث بيانات الخبير "${name}" بنجاح.`, "info");
 
-    revalidatePath("/admin/experts");
-    revalidatePath("/about");
-    revalidatePath("/");
+    await revalidate("/admin/experts");
+    await revalidate("/about");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error updating expert:", error);

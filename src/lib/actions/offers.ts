@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-
+async function revalidate(path: string) {
+  const { revalidatePath } = await import('next/cache');
+  revalidatePath(path);
+}
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
 import { logActivity, sendNotification } from "./logs";
+import { revalidatePath } from "next/cache";
 
 export async function getOffers() {
   try {
@@ -64,9 +68,9 @@ export async function deleteOffer(id: string) {
     await logActivity("حذف عرض", `تم حذف العرض الخاص: ${offer?.title || id}`);
     await sendNotification("تم حذف عرض", "تمت إزالة العرض من النظام.", "warning");
 
-    revalidatePath("/admin/offers");
-    revalidatePath("/offers");
-    revalidatePath("/");
+    await revalidate("/admin/offers");
+    await revalidate("/offers");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error deleting offer:", error);
@@ -103,9 +107,9 @@ export async function updateOffer(id: string, formData: FormData) {
     await logActivity("تعديل عرض", `تم تعديل بيانات العرض: ${title}`);
     await sendNotification("تم تعديل العرض", `تم تحديث بيانات العرض "${title}" بنجاح.`, "info");
 
-    revalidatePath("/admin/offers");
-    revalidatePath("/offers");
-    revalidatePath("/");
+    await revalidate("/admin/offers");
+    await revalidate("/offers");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error updating offer:", error);

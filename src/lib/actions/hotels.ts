@@ -1,8 +1,13 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+// Dynamic import for revalidatePath to avoid bundling server-only modules
+async function revalidate(path: string) {
+  const { revalidatePath } = await import("next/cache");
+  return revalidatePath(path);
+}
 import { logActivity, sendNotification } from "./logs";
+import { revalidatePath } from "next/cache";
 
 export async function getHotels() {
   try {
@@ -47,9 +52,9 @@ export async function createHotel(formData: FormData) {
     await logActivity("إضافة فندق", `تمت إضافة فندق جديد: ${name}`);
     await sendNotification("تمت الإضافة", `تمت إضافة الفندق "${name}" للنظام بنجاح.`, "success");
 
-    revalidatePath("/admin/hotels");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/hotels");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error creating hotel:", error);
@@ -67,9 +72,9 @@ export async function deleteHotel(id: string) {
     await logActivity("حذف فندق", `تم حذف الفندق: ${hotel?.name || id}`);
     await sendNotification("تم الحذف", "تمت إزالة الفندق من النظام.", "warning");
 
-    revalidatePath("/admin/hotels");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/hotels");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error deleting hotel:", error);

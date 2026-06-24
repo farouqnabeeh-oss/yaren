@@ -1,7 +1,10 @@
 "use server";
-
+async function revalidate(path: string) {
+  const { revalidatePath } = await import('next/cache');
+  revalidatePath(path);
+}
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+
 import { logActivity, sendNotification } from "./logs";
 
 export async function getTrips() {
@@ -47,9 +50,9 @@ export async function createTrip(formData: FormData) {
     await logActivity("إضافة رحلة", `تمت إضافة رحلة جديدة: ${title}`);
     await sendNotification("تمت الإضافة", `تمت إضافة رحلة "${title}" بنجاح.`, "success");
 
-    revalidatePath("/admin/trips");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/trips");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error creating trip:", error);
@@ -67,9 +70,9 @@ export async function deleteTrip(id: string) {
     await logActivity("حذف رحلة", `تم حذف رحلة: ${trip?.title || id}`);
     await sendNotification("تم الحذف", "تمت إزالة الرحلة من النظام.", "warning");
 
-    revalidatePath("/admin/trips");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/trips");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error deleting trip:", error);
@@ -114,9 +117,9 @@ export async function updateTrip(id: string, formData: FormData) {
     await logActivity("تعديل رحلة", `تم تعديل بيانات الرحلة: ${title}`);
     await sendNotification("تم التعديل", `تم تحديث بيانات رحلة "${title}" بنجاح.`, "info");
 
-    revalidatePath("/admin/trips");
-    revalidatePath("/admin");
-    revalidatePath("/");
+    await revalidate("/admin/trips");
+    await revalidate("/admin");
+    await revalidate("/");
     return { success: true };
   } catch (error) {
     console.error("Error updating trip:", error);
